@@ -1,0 +1,666 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="chatMapper">
+
+
+<resultMap type="ChatDto" id="chatResultMap">
+	<result column="CHAT_NO" property="chatNo" />
+	<result column="CHAT_TITLE" property="chatTitle" />
+	<result column="CHAT_REGIST_DATE" property="chatRegistDate" />
+	<result column="mem_no" property="chatCreater" />
+	<result column="CHAT_NEWMSG" property="chatNewMsg" />
+	<result column="chat_count" property="chatCount"/>
+	<result column="msg_no" property="msgNo"/>
+	<result column="PROFILE_URL" property="profileURL" />
+	<result column="mem_name" property="memName" />
+</resultMap>
+
+
+
+<resultMap type="chatProfileDto" id="chatProfileResultMap">
+	<result column="MEM_NO" property="memNo" />
+	<result column="CP_MESSAGE" property="cpMessage" />
+	<result column="CP_STATUS" property="cpStatus" />
+</resultMap>
+
+
+
+<resultMap type="ChatListDto" id="chatListResultMap">
+	<result column="CHAT_NO" property="chatNo" />
+	<result column="MEM_NO" property="memNo" />
+	<result column="CL_REGIST_DATE" property="clRegistDate" />
+	<result column="CHAT_NOTICE_NO" property="chatNoticeNo" />
+	<result column="CL_LOCK" property="clLock" />
+	<result column="CL_ALRAM" property="clAlram" />
+</resultMap>
+
+
+
+<resultMap type="MessageDto" id="messageResultMap">
+	<result column="MSG_NO" property="msgNo" />
+	<result column="CHAT_NO" property="chatNo" />
+	<result column="MEM_NO" property="memNo" />
+	<result column="MSG_CONTENT" property="msgContent" />
+	<result column="MSG_REGIST_DATE" property="msgRegistDate" />
+	<result column="MSG_CHECK" property="msgCheck" />
+	<result column="MSG_STATUS" property="msgStatus" />
+	<result column="MSG_MODIFY_DATE" property="msgModifyDate" />
+	<result column="PROFILE_URL" property="profileURL" />
+	<result column="mem_name" property="memName" />
+</resultMap>
+
+
+
+<resultMap type="AlertDto" id="alertResultMap">
+	<result column="ALERT_NO" property="alertNo" />
+	<result column="ALERT_TYPE" property="alertType" />
+	<result column="ALERT_CONTENT" property="alertContent" />
+	<result column="ALERT_STATUS" property="alertStatus" />
+	<result column="MEM_NO" property="memNo" />
+	<result column="ALERT_REGIST_DATE" property="alertRegistDate" />
+	<result column="ALERT_LINK" property="alertLink" />
+</resultMap>
+
+
+<resultMap type="MemberDto" id="memberResultMap">
+	<result column="MEM_NO" property="memNo" />
+	<result column="MEM_NAME" property="memName" />
+	<result column="PHONE" property="phone" />
+	<result column="EMAIL" property="email" />
+	<result column="ADDRESS" property="address" />
+	<result column="HIRE_DATE" property="hireDate" />
+	<result column="END_DATE" property="endDate" />
+	<result column="STATUS" property="status" />
+	<result column="PROFILE_URL" property="profileURL" />
+	<result column="DEPT_NAME" property="deptCode" />
+	<result column="POS_NAME" property="posCode" />
+	<result column="chat_no" property="chatNo" />
+</resultMap>
+
+
+
+<!-- 채팅방 목록 불러오기 -->
+<select id="chatList" resultMap="chatResultMap">
+select 
+			 c.CHAT_NO
+			,cl_TITLE chat_title
+			,CHAT_REGIST_DATE
+			,CL.mem_no
+			,CHAT_NEWMSG
+			,MSG_NO
+  from chat c
+  join chat_list cl on (c.chat_no = cl.chat_no)
+ where cl.mem_no = #{memNo}
+</select>
+
+<!-- 유저 프로필상태 불러오기 -->
+<select id="chatProFileList" resultMap="chatProfileResultMap">
+	select cp.MEM_NO
+		   , CP_MESSAGE
+		   , CP_STATUS
+	  from chat_profile cp
+	 full join member m on (cp.mem_no = m.mem_no)
+   where m.status in ('Y','S','A')
+</select>
+
+<!-- 사원 목록 불러오기 -->
+<select id="memberList" resultMap="memberResultMap">
+	select MEM_NO
+			 , MEM_NAME
+			 , PHONE,EMAIL
+			 , ADDRESS,HIRE_DATE
+			 , END_DATE
+			 , STATUS
+			 , PROFILE_URL
+			 , DEPT_name
+			 , POS_name
+	  from member m
+      join department d on (m.dept_code = d.dept_code)
+      join position p on (m.pos_code = p.pos_code)
+   where status in ('Y','S','A')  
+</select>
+
+<!-- 채팅방 인원 체크 -->
+<select id="chatCount" resultType="_int">
+select count(chat_no) chat_count
+  from chat_list
+ where chat_no = #{chatNo}
+ group by chat_no
+</select>
+
+
+<!-- 맴버 정보 불러오기 -->
+<select id="memberInfo" resultMap="memberResultMap">
+ 	select MEM_NO
+			 , MEM_NAME
+			 , PHONE,EMAIL
+			 , ADDRESS,HIRE_DATE
+			 , END_DATE
+			 , STATUS
+			 , PROFILE_URL
+			 , d.DEPT_NAME
+			 , p.POS_NAME
+	  from member m
+      join department d on (m.dept_code = d.dept_code)
+      join position p on (m.pos_code = p.pos_code)
+   where status in ('Y','S')	 
+   	 and mem_no = #{memNo} 
+</select>
+
+<!-- 프로필 정보 불러오기 -->
+<select id="chatProFileInfo" resultMap="chatProfileResultMap">
+	select cp.MEM_NO
+		   , CP_MESSAGE
+		   , CP_STATUS
+	  from chat_profile cp
+	  join member m on (cp.mem_no = m.mem_no)
+   where m.status in ('Y','S')
+     and m.mem_no = #{memNo}  
+</select>
+
+<!-- 메시지 목록 불러오기 -->
+<select id="messageList" resultMap="messageResultMap">
+	select MSG_NO
+			 , CHAT_NO
+			 , m.MEM_NO
+			 , MSG_CONTENT
+			 , MSG_REGIST_DATE
+			 , MSG_CHECK
+			 , MSG_STATUS
+			 , MSG_MODIFY_DATE
+       , profile_url
+       , mem_name
+  from message msg
+  join member m on(m.mem_no = msg.mem_no)
+ where chat_no = #{chatNo}
+   and MSG_STATUS in ('Y','N','M')
+ order by msg_no
+</select>
+
+<!-- 채팅 등록 -->
+<insert id="insertMessage">
+ 	insert
+		into
+ message
+			 (
+			 	MSG_NO
+			 ,CHAT_NO
+			 ,MEM_NO
+			 ,MSG_CONTENT
+			 ,MSG_CHECK
+			 )
+			 values
+			 (
+			 	seq_msg.nextval
+			 ,#{chatNo}
+			 ,#{memNo}
+			 ,#{msgContent}
+			 ,#{msgCheck}
+			 )
+</insert>
+
+
+<!-- 최근메시지 등록 -->
+<update id="updateNewMsg">
+			UPDATE 
+							chat
+				 SET 
+				 			CHAT_REGIST_DATE = (
+			    													SELECT MSG_REGIST_DATE
+			   														  FROM (
+			       																	 SELECT MSG_REGIST_DATE
+			       																		 FROM message
+			       																	  WHERE CHAT_NO = #{chatNo}
+			        																ORDER BY MSG_REGIST_DATE DESC
+																			     ) 
+																			        WHERE rownum = 1
+			),
+			CHAT_NEWMSG = #{msgContent},
+			msg_no = #{msgNo}
+			WHERE CHAT_NO = #{chatNo}
+</update>
+
+<!-- 채팅방 생성 -->
+<insert id="startChat">
+
+	insert
+		into	chat
+					(
+						CHAT_NO
+					,	CHAT_TITLE
+					,	CHAT_REGIST_DATE
+					,	CHAT_CREATER
+					)
+					values
+					(
+						seq_chat.nextval
+					,	#{inviteName}
+					,	SYSDATE
+					,	#{memNo}
+					)							
+</insert>
+
+<!-- 채팅방 리스트에 추가 -->
+<insert id="insertChatList">
+	insert
+		into	chat_List
+					(
+						CHAT_NO
+					, MEM_NO
+					, cl_title
+					)
+					values
+					(
+						seq_chat.currval
+					,	#{memNo}
+					, #{memName}
+					)
+</insert>
+
+<!-- 채팅방 중복검사 -->
+<select id="checkChatList" resultType="string">
+	SELECT count(CHAT_NO)
+		FROM chat_list
+	 WHERE MEM_NO IN 
+		<foreach collection="list" item="memNo" open="(" separator="," close=")">
+	   	#{memNo}
+	 	</foreach>
+     and cl_type = 'P'
+	 GROUP BY CHAT_NO
+  HAVING COUNT(DISTINCT MEM_NO) = 2
+</select>
+
+<!-- 채팅방 번호랑 제목불러오기 -->
+<select id="chatInfo" resultMap="chatResultMap">
+SELECT
+    	chat_no,
+    	cl_title chat_title,
+    	mem_no chatCreater
+FROM
+	    (SELECT
+	         chat_no,
+	         cl_title,
+	         mem_no 
+	     FROM
+	         chat_list
+	     WHERE
+	         mem_no = #{memNo}
+	     ORDER BY
+	         chat_no DESC)
+WHERE
+   		 ROWNUM = 1
+</select>
+
+<select id="chatTitle" resultMap="chatResultMap">
+select
+				chat_title
+	from
+				chat
+ where	chat_no = #{chatNo}
+</select>
+
+<!-- 채팅방 참여자 목록 불러오기 -->
+<select id="chatUserList" resultMap="memberResultMap">
+select
+				m.mem_name
+     ,  m.PROFILE_URL
+	from
+				chat_list cl
+    		join member m on (m.mem_No = cl.mem_No)
+ where	cl.chat_no = #{chatNo}
+			
+</select>
+
+<!-- 메시지 번호 조회 -->
+<select id="msgNum" resultType="_int">
+select max(msg_no) msg_no 
+from message
+</select>
+
+<!-- 메시지 삭제 -->
+<update id="deleteMsg">
+update
+        message
+   set
+        MSG_CONTENT = '삭제된 메시지입니다.'
+     ,  MSG_STATUS = 'N'
+ where  MSG_No = #{msgNo}
+</update>
+
+<!-- 메시지 삭제시 최근메시지변경 -->
+<update id="changeNewMsg">
+update
+				chat
+	 set
+	 			CHAT_NEWMSG = #{msgContent}
+ where	chat_no = #{chatNo}
+</update>
+
+<!-- 메시지 수정하기 -->
+<update id="modifyMsg">
+update
+				message
+	 set
+	 			msg_content = #{msgContent},
+	 			msg_status = 'M'
+ where
+ 				msg_no = #{msgNo}
+</update>
+
+<!-- 메시지 상태 불러오기 -->
+<select id="msgStatus" resultType="string">
+select
+				msg_status
+	from
+				message
+ where
+ 				msg_no = #{msgNo}
+</select>
+
+<!-- 잠금상태 확인 -->
+<select id="chatLock" resultType="string">
+select
+				cl_lock
+	from
+				chat_list
+ where
+ 				chat_no = #{chatNo}
+   and  mem_no = #{memNo}
+</select>
+
+<!-- 잠금상태 변경하기 -->
+<update id="chatLockUpdate">
+update
+				chat_list
+	 set	cl_lock = #{clLock}
+ where	chat_no = #{chatNo}
+   and  mem_no = #{memNo}
+</update>
+
+<!-- 해당 채팅방 최근 메시지 번호 불러오기 -->
+
+<select id="newMsgNo" resultType="_int">
+SELECT
+    	msg_no
+FROM
+	    (SELECT
+	         msg_no
+	     FROM
+	         message
+        where 
+            chat_no = #{chatNo}
+	     ORDER BY
+	          msg_no DESC)
+WHERE
+   		 ROWNUM = 1
+</select>
+
+<update id="titleChange">
+update
+				chat_list
+	 set	
+	 			cl_title = #{clTitle}
+ where	chat_no = #{chatNo}
+ 	 and	mem_no = #{memNo}
+
+</update>
+
+<insert id="inviteMem">
+insert
+	into
+				chat_list
+				(
+					chat_no
+				,	mem_no
+				,	cl_title
+				)
+				values
+				(
+					#{chatNo}
+				,	#{inviteNo}
+				, #{memName}||' 단체방'
+				)
+
+</insert>
+
+<update id="updateChatStatus">
+
+update
+				chat_list
+	 set
+	 			cl_type = 'G'
+	 		, cl_title = #{memName}||' 단체방'
+ where
+				chat_no = #{chatNo}
+</update>
+
+<select id="chatMember" resultType="string">
+select
+        mem_no
+  from
+        chat_list
+ where
+        chat_no = #{chatNo}
+</select>
+
+<select id="chatMemberName" resultType="string">
+select
+				mem_name
+	from
+				member
+ where
+ 				mem_no = #{inviteNo}
+
+</select>
+
+<select id="memberIMG" resultType="string">
+select
+				profile_url
+	from
+				member
+ where
+ 				MEM_NO IN 
+				<foreach collection="list" item="memNo" open="(" separator="," close=")">
+			   	#{memNo}
+			 	</foreach>
+</select>
+
+<select id="chatNewChat" resultType="string">
+select
+				chat_newmsg
+	from
+				chat
+ where
+ 				chat_no = #{chatNo}
+
+</select>
+
+<select id="checkChatListMem" resultType="_int">
+
+select count(*)
+  from chat_list
+ where chat_no = #{chatNo}
+   and mem_no = #{inviteNo}
+
+</select>
+
+<delete id="deleteChat">
+delete
+	from	chat_list
+ where	chat_no = #{chatNo}
+</delete>
+
+
+<select id="ChatMember2" resultType="string">
+select
+        mem_no
+  from
+        chat_list
+ where
+        chat_no = #{chatNo}
+   and  mem_no = #{memNo}
+
+
+
+</select>
+
+<select id="deleteBtn" resultType="string">
+select 
+				CHAT_CREATER
+	from
+				chat
+ where
+ 				chat_no = #{chatNo}
+</select>
+			
+<delete id="deleteMsgAll">
+delete
+	from	message
+ where	chat_no = #{chatNo}
+</delete>
+
+<delete id="deleteChatList">
+delete
+	from	chat
+ where	chat_no = #{chatNo}
+</delete>
+
+
+<select id="noticeMsg" resultType="string">
+select
+				msg_content
+	from
+				message
+ where
+ 				msg_no = #{msgNo}
+</select>
+
+
+<update id="insertNoticeNo">
+update
+				chat_list
+	 set
+	 			chat_notice_no = #{msgContent}
+ where
+ 				chat_no = #{chatNo}
+</update>
+
+
+<select id="noticeMsgData" resultType="string">
+
+select
+				CHAT_NOTICE_NO
+	from
+				chat_list 
+ where
+ 				chat_no = #{chatNo}
+ 	 and	mem_no = #{memNo}
+
+</select>
+
+<update id="deleteNotice">
+update
+				chat_list
+	 set
+	 			CHAT_NOTICE_NO = null
+ where
+ 				chat_no = #{chatNo}
+ 	 and	mem_no = #{memNo}
+</update>
+
+<select id="statusMsg" resultType="string">
+update
+				chat_profile
+	 set	cp_message = #{cpMessage}
+ where	mem_no = #{memNo}
+				
+</select>
+
+<select id="alertList" resultMap="alertResultMap">
+select ALERT_NO
+		 , ALERT_TYPE
+		 , ALERT_CONTENT
+		 , ALERT_STATUS
+		 , MEM_NO
+		 , ALERT_REGIST_DATE
+		 , ALERT_LINK
+  from
+  			alert
+ where
+ 				mem_no = #{memNo}
+</select>
+
+<delete id="alertDelete">
+delete
+	from	alert
+ where	alert_no = #{alertNo}
+</delete>
+
+<select id="countAlert" resultType="_int">
+SELECT
+    	count(ALERT_STATUS)
+  from 
+        alert
+WHERE
+        mem_no = #{memNo}
+  and   ALERT_STATUS= 'N'
+</select>
+
+<select id="memberLink" resultMap="memberResultMap">
+
+select
+        cl.CHAT_NO
+     ,  cl.MEM_NO
+     ,  profile_URL
+  from
+        chat_list cl
+  join  chat c on (cl.chat_no = c.chat_no)
+  join  member m on(m.mem_no = cl.mem_no)
+ where  cl.chat_no = #{chatNo}
+ 
+</select>
+
+<select id="writerUrl" resultMap="memberResultMap">
+select
+        PROFILE_URL,
+        mem_no,
+        mem_name
+  from
+        member
+ where
+        mem_no = #{memNo}
+</select>
+
+<select id="writerNo" resultType="string">
+select
+        mem_no
+  from
+        chat_list
+ where
+ 				chat_no = #{chatNo}
+</select>
+
+<select id="chatMemName" resultMap="memberResultMap">
+select
+        m.mem_no
+    ,   mem_name
+  from
+        chat_list cl
+  join  member m on(cl.mem_no=m.mem_no)
+ where
+        chat_no = #{chatNo}
+</select>
+
+<select id="writerUrl2" resultType="string">
+select
+        PROFILE_URL,  
+        mem_no,
+        mem_name
+  from
+        member
+ where
+        mem_no = #{memName}
+</select>
+
+
+</mapper>

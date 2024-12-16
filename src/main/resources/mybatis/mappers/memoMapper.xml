@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memoMapper">
+
+	<resultMap id="memoResultMap" type="memoDto">
+		<result column="MEMO_NO" property="memoNo" />
+		<result column="MEM_NO" property="memNo" />
+		<result column="MEMO_CONTENT" property="memoContent" />
+		<result column="MEMO_REGIST_DATE" property="memoRegistDt" />
+		<result column="MEMO_MODIFY_DATE" property="memoModifyDt" />
+	</resultMap>
+	
+	<!-- 메모 전체 조회(리스트) -->
+	<select id="selectMemoList" resultMap="memoResultMap">
+		select
+				   memo_no
+				 , mem_no
+				 , memo_content
+				 , memo_regist_date
+				 , memo_modify_date
+		  from memo
+		 where mem_no = #{memNo}
+		 order
+		    by memo_no desc
+	</select>
+	
+	<!-- 메모 등록 -->
+	<insert id="insertMemo">
+		insert
+		  into memo
+ 				  (
+ 				   memo_no
+ 				 , mem_no
+ 				 , memo_content
+ 				 , memo_regist_date
+ 				 , memo_modify_date				  
+ 				  )
+ 	 values
+ 	 				(
+ 	 				 seq_memono.nextval
+ 	 			 , #{memNo}
+ 	 			 , #{memoContent}
+ 	 			 , sysdate
+ 	 			 , sysdate
+ 	 				)
+	</insert>
+	
+	<!-- 메모 선택조회 -->
+	<select id="selectMemoByNo" resultMap="memoResultMap">
+		select
+					 memo_no
+				 , mem_no
+				 , memo_content
+				 , memo_regist_date
+				 , memo_modify_date
+		  from memo
+		 where memo_no = #{memoNo}
+	</select>
+	
+	<!-- 메모 수정 -->
+	<update id="modifyMemo">
+		update
+					 memo
+		   set 
+		   		 memo_content = #{memoContent}
+		   	 , memo_modify_date	= sysdate
+		 where memo_no = #{memoNo}
+		   and mem_no = #{memNo}
+	</update>
+	
+	<!-- 메모 삭제 -->
+	<delete id="deleteMemo">
+		delete
+			from memo
+	   where memo_no = #{memoNo}
+	</delete>
+  
+</mapper>

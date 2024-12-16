@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<appender class="ch.qos.logback.core.ConsoleAppender" name="consoleLog">
+		<encoder>
+			<pattern>%-5level: [%date] [%logger:%line] - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender class="ch.qos.logback.core.ConsoleAppender" name="websocketLog">
+		<encoder>
+			<pattern>[%date] - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	
+	<logger name="org.springframework" level="INFO"/>
+	<logger name="com.cl.cruella" level="DEBUG" />
+	<logger name="com.cl.cruella.handler" level="DEBUG" additivity="false">
+		<appender-ref ref="websocketLog" />
+	</logger>
+	
+	<logger name="jdbc.sqlonly" level="off" /> 			<!-- 쿼리문 -->
+	<logger name="jdbc.sqltiming" level="off" />			<!-- 쿼리문 + 실행시간 -->
+	<logger name="jdbc.audit" level="off" />					<!-- JDBC 호출 정보 -->
+	<logger name="jdbc.resultset" level="off" />			<!-- Result 호출 정보 -->
+	<logger name="jdbc.resultsettable" level="off" /><!-- ResultSet 결과 (조회결과 테이블) -->
+	<logger name="jdbc.connection" level="off" />		<!-- Connection 호출 정보 -->
+	
+	
+	<root level="WARN"> 
+		<appender-ref ref="consoleLog" />
+	</root>
+	
+	
+	
+	 
+</configuration>

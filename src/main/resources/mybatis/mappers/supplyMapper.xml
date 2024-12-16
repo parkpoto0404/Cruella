@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="supplyMapper">
+
+<resultMap type="SupplyDto" id="selectSupplyResultMap">
+	<result column="SUP_NO" property="supNo" />
+	<result column="SUP_CATEGORY" property="supCategory" />
+	<result column="SUP_NAME" property="supName" />
+	<result column="SUP_STATUS" property="supStatus" />
+	<result column="SUP_DATE" property="supDt" />
+	<result column="SUP_MODEL" property="supModel" />
+	<result column="SUP_REPAIR" property="supRepair" />
+	<result column="SUP_REPAIR_DETAIL" property="supRepairDetail" />
+	<result column="SUP_TYPE" property="supType" />
+	<result column="LEFTSUPPLY" property="leftSupply" />
+	<result column="REPAIRSUPPLY" property="repairSupply" />
+	<result column="WORKSUPPLY" property="workSupply" />
+	<result column="SUP_URL" property="supUrl" />
+</resultMap>
+
+
+<!-- 비품 전체 목록 조회하기 -->
+<select id="selectSupplyList" resultMap="selectSupplyResultMap">
+	SELECT 
+		     SUP_CATEGORY, 
+		     SUP_TYPE,
+		     COUNT(CASE WHEN SUP_STATUS IN ('Y', 'N') THEN 1 END) AS TOTALSUPPLY,
+		     COUNT(CASE WHEN SUP_STATUS = 'Y' THEN 1 END) AS LEFTSUPPLY,
+		     COUNT(CASE WHEN SUP_STATUS = 'N' THEN 1 END) AS RENTSUPPLY,
+		     COUNT(CASE WHEN SUP_REPAIR = 'Y' AND SUP_STATUS = 'Y' THEN 1 END) AS REPAIRSUPPLY
+		FROM 
+		     SUPPLIES
+	  <if test="supCategory != '전체'">
+	 WHERE SUP_CATEGORY = #{supCategory}
+	 	</if>
+	 GROUP BY 
+		     SUP_CATEGORY, 
+		     SUP_TYPE
+	 ORDER BY 
+		     SUP_CATEGORY, 
+		     SUP_TYPE
+</select>
+
+
+<select id="countSupply" resultType="_int">
+	SELECT count(distinct sup_type)
+		FROM 
+		     SUPPLIES
+   <if test="supCategory != '전체'">
+      where sup_category = #{supCategory}
+   </if>
+   
+</select>
+
+<insert id="insertSupply">
+INSERT 
+  INTO SUPPLIES
+     ( 
+     SUP_NO
+     , SUP_CATEGORY
+     , SUP_NAME
+     , SUP_MODEL
+     , SUP_REPAIR
+     , SUP_TYPE
+    
+      )
+     VALUES
+     ( 
+     SEQ_SUP.NEXTVAL
+     , #{supCategory}
+     , #{supName}
+     , #{supModel}
+     , #{supRepair}
+     , #{supType}
+   
+     )
+</insert>
+
+<insert id="insertAttach">
+INSERT
+  INTO ATTACHMENT
+     ( FILE_NO
+		 , FILE_PATH
+		 , FILE_SYSTEM_NAME
+		 , FILE_ORIGINAL_NAME
+		 , FILE_REF_TYPE
+		 , FILE_REF_NO
+     )
+		VALUES
+		 ( SEQ_FNO.NEXTVAL
+		 , #{filePath}
+		 , #{filesystemName}
+		 , #{originalName}
+		 , 'S'
+		 , SEQ_SUP.CURRVAL
+		 )
+</insert>
+
+<insert id="insertRental">
+INSERT
+  INTO RENTAL
+     ( REN_NO
+		 , MEM_NO
+		 , SUP_TYPE
+		 , SUP_CATEGORY
+     )
+     VALUES
+     ( SEQ_REN.NEXTVAL
+     , #{memNo}
+     , #{supType}
+     , #{supCategory}
+     )
+</insert>
+
+
+</mapper>

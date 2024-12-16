@@ -1,0 +1,530 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+
+	<resultMap id="memberResultMap" type="MemberDto">
+		<result column="mem_no" property="memNo" />
+		<result column="mem_name" property="memName" />
+		<result column="mem_pwd" property="memPwd" />
+		<result column="phone" property="phone" />
+		<result column="email" property="email" />
+		<result column="address" property="address" />
+		<result column="hire_date" property="hireDate" />
+		<result column="end_date" property="endDate" />
+		<result column="status" property="status" />
+		<result column="gender" property="gender" />
+		<result column="mem_ssn" property="memSSN" />
+		<result column="account" property="account" />
+		<result column="profile_url" property="profileURL" />
+		<result column="bank_name" property="bankName" />
+		<result column="vac_count" property="vacCount" />
+		<result column="DEPT_CODE" property="deptCode" />
+		<result column="POS_CODE" property="posCode" />
+		<result column="sign_path" property="signPath" />
+		<result column="pos_name" property="posName" />
+		<result column="dept_name" property="deptName" />
+		<result column="salary" property="salary" />
+		<result column="wl_status" property="wlStatus" />
+		<result column="sal_pension" property="pension" />
+		<result column="sal_health" property="health" />
+		<result column="sal_care" property="care" />
+		<result column="sal_employment" property="employment" />
+		<result column="sal_total" property="totalSalary" />
+		<result column="sal_payment_date" property="paymentDate" />
+		<result column="sal_status" property="salStatus" />
+		<result column="hire_Date2" property="hireDate2" />
+		
+	</resultMap>
+	
+
+	<resultMap id="appDocResultMap" type="AppdocDto">
+		<result column="mem_no" property="memNo"/>
+		<result column="doc_no" property="docNo"/>
+		<result column="doc_type" property="docType"/>
+		<result column="doc_title" property="docTitle"/>
+		<result column="doc_date" property="docDt"/>
+		<result column="doc_status" property="docStatus"/>
+	</resultMap>
+
+	<resultMap id="deptResultMap" type="DeptDto">
+		<result column="dept_code" property="deptCode"/>
+		<result column="dept_name" property="deptName"/>
+	</resultMap>
+
+	<!-- 로그인(김동규) 수정페이지조회(예빈) -->
+	<select id="selectMember" resultMap="memberResultMap">
+		select 
+		       m.mem_no
+		     , m.mem_name
+		     , m.mem_pwd
+		     , m.phone
+		     , m.email
+		     , m.address
+		     , to_char(m.hire_date, 'YYYY-MM-DD') as hire_date
+		     , m.end_date
+		     , m.status
+		     , m.gender
+		     , m.mem_ssn
+		     , m.account
+		     , m.profile_url
+		     , m.bank_name
+		     , m.vac_count
+		     , m.dept_code
+		     , m.pos_code
+		     , m.sign_path
+		     , d.dept_name
+		     , p.pos_name
+		     , (select wl.wl_status 
+		          from work_log wl 
+		         where wl.mem_no = m.mem_no 
+		           and trunc(wl_work_date) = trunc(sysdate)
+		           and rownum = 1) as wl_status
+		         
+		from member m
+		join department d ON m.dept_code = d.dept_code
+		join position p ON m.pos_code = p.pos_code
+		where m.mem_no = #{memNo}
+		and m.status != 'N'
+	</select>
+
+	<!-- 비밀번호 변경(김동규) -->
+	<update id="resetPwd" parameterType="map">
+		update
+					 member
+			 set 
+			 		 mem_pwd = #{newPwd}
+			   , status = 'Y'
+		 where 
+		 			 mem_no = #{memNo}
+	</update>
+	
+
+	<!-- 나의 소속팀 전체 리스트 조회(김동규) -->
+	<select id="selectTeamList" resultMap="memberResultMap">
+		select
+					mem_no
+				, mem_name
+				, mem_pwd
+				, phone
+				, email
+				, address
+				, hire_date
+				, end_date
+				, status
+				, gender
+				, mem_ssn
+				, account
+				, profile_url
+				, bank_name
+				, vac_count
+				, DEPT_CODE
+				, POS_CODE
+				, sign_path
+				, d.dept_name
+				, p.pos_name
+		 from member
+		 join department d using(dept_code)
+     join position p using(pos_code)
+		where dept_code = #{deptCode}
+          and mem_no != #{memNo}
+          and status != 'N'
+	</select>
+	
+	<!-- 등록된 메일 여부 확인(김동규) -->
+	<select id="checkEmail" resultMap="memberResultMap">
+		select
+					 mem_no
+			from 
+					 member
+		 where email = #{mail}
+	</select>
+	
+	<!-- 임시 비밀번호로 변경(김동규) -->
+	<update id="updatePwd" parameterType="map">
+		update
+				   member
+			 set 
+			 		 mem_pwd = #{str}
+			 	 , status = 'A'
+		 where email = #{email}
+	</update>
+
+	<!-- 회원등록 (이예빈)  -->
+	<insert id="insertMember">
+	insert
+		into member
+		(
+			mem_no
+		, mem_name
+		, mem_pwd
+		, phone
+		, email
+		, address
+		, hire_date
+		, mem_ssn
+		, account
+		, bank_name
+		, pos_code
+		, dept_code
+		, salary
+		, profile_url
+		)
+		values
+		(
+		  #{memNo}
+		, #{memName}
+		, #{memPwd}
+		, #{phone}
+		, #{email}
+		, #{address}
+		, #{endDate}
+		, SUBSTR(#{memSSN}, 1, 8) || '******'
+		, #{account}
+		, #{bankName}
+		, #{posCode}
+		, #{deptCode}
+		, #{salary}
+		, #{profileURL}
+		)
+	</insert>
+	
+	<!-- 사번생성 (예빈) -->
+	<select id="selectMemNo" resultType="string"> 
+		select 'C' || to_char(sysdate, 'YYYY') || lpad(count(substr(mem_no, 1, 9)) + 1, 3, '0')
+from member
+where substr(mem_no, 2, 4) = to_char(sysdate, 'YYYY')
+	</select>
+	
+	<!-- 사원 프로필이미지 수정 -->
+	<update id="updateProfileImg">
+		update
+					member
+			set profile_url = #{profileURL}
+		where mem_no = #{memNo}
+	</update>
+	
+	<!-- 전자서명 저장 (김동규) -->
+	<update id="saveSignPath">
+		update
+				   member
+			 set sign_path = #{signPath}
+		 where mem_no = #{memNo}
+	</update>
+	
+	<!-- 전체직원수조회 -->
+	<select id="getMemberCount" resultType="_int">
+		select
+					count(*)
+		 from member
+		 where status != 'N'
+	</select>
+	
+	<!-- 직원조회리스트 (이예빈) 	-->
+	<select id="getPagedMemberList" resultMap="memberResultMap">
+		select 
+                   mem_no
+				 , mem_name
+				 , DEPT_NAME
+				 , POS_NAME
+				 , email
+		  from member m
+          join  position p on (p.pos_code = m.pos_code)
+          join department d on (d.dept_code = m.dept_code)
+          
+          where m.status != 'N'
+		  order by mem_no
+	
+	</select>
+	
+	<!-- 사원정보 수정(이예빈) -->
+	<update id="updateMember">
+		update 
+					 member
+			 set mem_name = #{memName}
+			 	 , email = #{email}
+			 	 , bank_name = #{bankName}
+			 	 , DEPT_CODE = #{deptCode}
+			 	 , POS_CODE = #{posCode}
+			 	 , address = #{address}
+			 	 , phone = #{phone}		
+			 	 , salary = #{salary}
+			 	 , profile_url = #{profileURL}
+		 where mem_no = #{memNo} 
+	</update>
+	
+	<!-- 사원탈퇴(미완성) -->
+	<update id="deleteMember">
+		update
+					 member
+	
+	</update>
+	
+	<!-- 전체사원조회(본인제외) -->
+	<select id="selectAllMemberDept" resultMap="memberResultMap">
+		select 
+		       m.mem_no
+		     , m.mem_name
+		     , m.email
+		     , m.profile_url
+		     , d.dept_name
+		  from member m
+		  join department d
+		    on m.dept_code = d.dept_code
+		 where m.mem_no != #{memNo}
+		 	 and d.dept_name = #{deptName}
+		 	 and m.status != 'N'
+	</select>
+	
+	<!-- 휴가내역 조회 -->
+	<select id="selectVacList" resultMap="appDocResultMap">
+		select
+					 doc_title
+				 , doc_date
+				 , doc_status
+			from app_doc
+		 where mem_no = #{memNo}
+		   and doc_type = '연차신청서'
+		 order
+		    by doc_date desc
+	</select>
+	
+	<!-- 휴가내역조회 리스트갯수 -->
+  <select id="selectVacListCount" resultType="_int">
+		select
+					 count(*)
+			from app_doc
+		 where mem_no = #{memNo}
+		   and doc_type = '연차신청서'
+	</select>
+	<insert id="chatProfile">
+		insert 
+			into chat_profile
+			(
+			  mem_no
+			) 
+			values
+			(
+			  #{memNo}
+			)
+	</insert>
+	
+	<!-- 부서 데이터 가져오기 -->
+	<select id="getAllDepartments" >
+	    SELECT 
+	    			 DEPT_CODE 
+	    		 , dept_name
+	    from department
+	</select>
+	
+	<!-- 특정 부서에 속한 직원 데이터 가져오기 -->
+	<select id="getEmployeesByDeptCode" >
+	    select 
+	    mem_name,
+	    mem_no 
+	    from member
+	    where DEPT_CODE = #{deptCode}
+	</select>
+	
+	<insert id="insertPayment" >
+		insert
+		  into salary
+		  (
+		    mem_no
+		  , sal_total
+		  , sal_pension
+		  , sal_health
+		  , sal_care
+		  , sal_employment
+		  )
+		  values
+		  (
+		    #{memNo}
+		  , #{totalSalary}
+		  , #{pension}
+		  , #{health}
+		  , #{care}
+		  , #{employment}
+		  )
+		  
+	</insert>
+	
+	
+	
+	<select id="salarypayment" resultMap="memberResultMap">
+		select 
+		        m.mem_no
+		      , mem_name
+		      , d.dept_name
+		      , d.dept_code
+		      , pos_name
+		      , salary
+		      , sal_pension
+		      , sal_health
+		      , sal_employment
+		      , sal_care
+		      , sal_total
+		      , NVL(to_char(s.SAL_PAYMENT_DATE, 'YYYY-mm-DD'), 'N/A') as SAL_PAYMENT_DATE
+		 from member m
+			    join department d on (d.dept_code = m.dept_code)
+			    join position p on (p.pos_code = m.pos_code)
+			    join salary s on(s.mem_no = m.mem_no)
+	
+	
+	<where>
+        <if test="provide != ''">
+            d.dept_code = #{provide}
+        </if>
+         
+    </where>
+    
+          order by mem_no
+			    
+			    
+	</select>
+	
+	
+	
+	
+	
+	<update id="payBtn">
+		update salary 
+		set SAL_PAYMENT_DATE = sysdate
+	    where mem_no = #{no}
+					
+	</update>
+	
+	<!-- 급여날짜조회 (이예빈) -->
+	<select id="getSalaryByDate" resultMap="memberResultMap">
+    select 
+          m.mem_no
+        , m.mem_name
+        , d.dept_name
+        , p.pos_name
+        , m.salary
+        , s.sal_pension
+        , s.sal_health
+        , s.sal_employment
+        , s.sal_care
+        , s.sal_total
+        , s.sal_payment_date
+    from member m
+    join department d on (d.dept_code = m.dept_code)
+    join position p on (p.pos_code = m.pos_code)
+    join salary s on (s.mem_no = m.mem_no)
+    where to_char(s.sal_payment_date, 'YYYY') = #{year}
+      and to_char(s.sal_payment_date, 'MM') = #{month}
+    order by m.mem_no
+</select>
+	
+	<!-- 급여명세표 -->
+	<select id="paystub" resultMap="memberResultMap">
+		select 
+				   d.dept_name 
+				 , p.pos_name 
+				 , m.mem_name 
+				 , m.salary 
+				 , TO_CHAR(m.hire_date, 'YYYY-MM-DD') as hire_date
+				 , s.sal_pension
+				 , s.sal_health
+				 , s.sal_care
+				 , s.sal_employment
+				 , s.sal_total
+				 , NVL(to_char(s.SAL_PAYMENT_DATE, 'YYYY-mm-DD'), 'N/A') as SAL_PAYMENT_DATE
+		  from member m
+		  join department d on (d.dept_code = m.dept_code)
+		  join position p on (p.pos_code = m.pos_code)
+		  join salary s on (s.mem_no = m.mem_no)
+		  where m.mem_no = #{memNo}
+	</select>
+	
+	<!-- 부서명 전체조회 -->
+	<select id="getDeptList" resultMap="deptResultMap">
+	 select
+	 			  dept_code
+	 			, dept_name
+	   from department
+	</select>
+	
+	<select id="selectAllMember" resultMap="memberResultMap">
+		select 
+		       mem_no
+		     , mem_name
+		     , email
+		     , profile_url
+		  from member
+		 where mem_no != #{memNo}
+		   and status != 'N'
+	</select>
+	
+	<!-- 폰번호중복검사 -->
+	<select id="checkPhone" resultType="_int">
+		select count(*)
+		from member
+		where phone= #{phone}
+	</select>
+
+
+		<select id="selectMember2" resultMap="memberResultMap">
+		select 
+		       m.mem_no
+		     , m.mem_name
+		     , m.mem_pwd
+		     , m.phone
+		     , m.email
+		     , m.address
+		     , m.hire_date as hire_date2
+		     , m.end_date
+		     , m.status
+		     , m.gender
+		     , m.mem_ssn
+		     , m.account
+		     , m.profile_url
+		     , m.bank_name
+		     , m.vac_count
+		     , m.dept_code
+		     , m.pos_code
+		     , m.sign_path
+		     , d.dept_name
+		     , p.pos_name
+		     , m.salary
+		     , (select wl.wl_status 
+		          from work_log wl 
+		         where wl.mem_no = m.mem_no 
+		           and trunc(wl_work_date) = trunc(sysdate)
+		           and rownum = 1) as wl_status
+		         
+		from member m
+		join department d ON m.dept_code = d.dept_code
+		join position p ON m.pos_code = p.pos_code
+		where m.mem_no = #{memNo}
+	</select>
+	
+	<update id="updateMemberRetire">
+		update member
+		set status = 'N'
+		where mem_no = #{memNo}
+		
+	</update>
+	
+	<select id="checksalary" resultMap="memberResultMap">
+				select 
+		        m.mem_no
+		      , mem_name
+		      , d.dept_name
+		      , d.dept_code
+		      , pos_name
+		      , salary
+		      , sal_pension
+		      , sal_health
+		      , sal_employment
+		      , sal_care
+		      , sal_total
+		      , NVL(to_char(s.SAL_PAYMENT_DATE, 'YYYY-mm-DD'), 'N/A') as SAL_PAYMENT_DATE
+		 from member m
+			    join department d on (d.dept_code = m.dept_code)
+			    join position p on (p.pos_code = m.pos_code)
+			    join salary s on(s.mem_no = m.mem_no)
+		where m.mem_no = #{memNo}
+	</select>
+
+</mapper>

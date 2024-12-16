@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="${ contextPath }/assets/"
+  data-template="views"
+  data-style="light">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+    <script src="${ contextPath }/resources/assets/js/config.js"></script>
+</head>
+<body>
+<div class="layout-wrapper layout-content-navbar">
+	<div class="layout-container">
+	
+	
+    <!-- 헤더 시작 -->
+		<jsp:include page="/WEB-INF/views/common/header.jsp"/>
+    <!-- 헤더 끝 -->
+    
+		<div class="layout-page">
+
+    <!-- nav 시작 -->
+		<jsp:include page="/WEB-INF/views/common/nav.jsp" />
+		<!-- nav 끗 -->
+
+
+	<div class="content-wrapper">
+	<!-- 세션 시작 -->
+    <div class="container-xxl flex-grow-1 container-p-y">
+	  <!-- 이쪽에 세션정보 넣어야합니다 -->
+    
+    
+    
+    
+    
+    
+    </div>
+	<!-- 세션 끝 -->
+
+
+
+	<!-- 푸터 시작 -->
+	<jsp:include page="/WEB-INF/views/common/footer.jsp"/>
+	<!-- 푸터 끝 -->
+	
+	<div class="content-backdrop fade"></div>
+	<!-- wrapper 닫기 -->
+	</div>
+	
+	<!-- nav layout page 닫기 -->
+	</div>
+	
+	<!-- layout-container 닫기 -->
+	</div>
+     <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+	
+	
+	<!-- layout wrapper 닫기 -->
+	</div>
+	
+	
+	
+	
+	
+</body>
+</html>

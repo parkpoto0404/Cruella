@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cl.cruella.mapper.ChartMapper">
+
+  <resultMap id="chartResultMap" type="com.cl.cruella.dto.RevenueDto">
+    <result column="mem_no" property="memNo" />
+    <result column="rv_value" property="rvValue" />
+    <result column="rv_regist_date" property="rvRegistDate" />
+    <result column="rv_store" property="rvStore" />
+    <result column="dept_code" property="deptCode" />
+    <result column="month" property="month" />
+    <result column="sumValue" property="sumValue" />
+    <result column="sumStore" property="sumStore" />
+  </resultMap>
+
+  <!-- DEPT_CODE별 연도와 월의 매출 데이터를 조회하는 쿼리 -->
+  <select id="findDeptIncomeByMonth" parameterType="map" resultMap="chartResultMap">
+    SELECT
+        m.DEPT_CODE,
+        SUM(r.RV_VALUE) AS RV_VALUE
+    FROM
+        MEMBER m
+    JOIN
+        REVENUE r
+    ON
+        m.MEM_NO = r.MEM_NO
+    WHERE
+        TO_CHAR(TO_DATE(r.RV_REGIST_DATE, 'YYYY/MM/DD'), 'YYYY') = #{year}
+        AND TO_CHAR(TO_DATE(r.RV_REGIST_DATE, 'YYYY/MM/DD'), 'MM') = #{month}
+    GROUP BY
+        m.DEPT_CODE
+    ORDER BY
+        m.DEPT_CODE
+  </select>
+
+  <!-- 연도별 매출 데이터를 조회하는 쿼리 -->
+  <select id="findMonthlySalesByYear" parameterType="map" resultMap="chartResultMap">
+    SELECT
+        TO_CHAR(TO_DATE(rv_regist_date, 'YYYY/MM/DD'), 'MM') AS month,
+        SUM(rv_value) AS sumValue
+    FROM
+        REVENUE
+    WHERE
+        TO_CHAR(TO_DATE(rv_regist_date, 'YYYY/MM/DD'), 'YYYY') = #{year}
+    GROUP BY
+        TO_CHAR(TO_DATE(rv_regist_date, 'YYYY/MM/DD'), 'MM')
+    ORDER BY
+        TO_CHAR(TO_DATE(rv_regist_date, 'YYYY/MM/DD'), 'MM')
+  </select>
+
+  <!-- DEPT_CODE와 기간별 매출 데이터를 조회하는 쿼리 -->
+	<select id="findStoreSales" parameterType="map" resultMap="chartResultMap">
+    SELECT r.RV_STORE, SUM(r.RV_VALUE) AS sumStore
+    FROM REVENUE r
+    JOIN MEMBER m ON r.MEM_NO = m.MEM_NO
+    JOIN DEPARTMENT d ON m.DEPT_CODE = d.DEPT_CODE
+    WHERE d.DEPT_CODE = #{deptCode}
+      AND r.RV_REGIST_DATE BETWEEN #{startDate} AND #{endDate}
+    GROUP BY r.RV_STORE
+	</select>
+
+
+
+</mapper>

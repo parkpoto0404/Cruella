@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="wlMapper">
+
+	<resultMap id="workLogResultMap" type="WorkLogDto">
+		<result column="WL_NO" property="workNo" />
+		<result column="MEM_NO" property="memNo" />
+		<result column="WL_CLOCK_IN" property="clockInTime" />
+		<result column="WL_CLOCK_OUT" property="clockOutTime" />
+		<result column="WL_STATUS" property="status" />
+		<result column="WL_MODIFY_DATE" property="modifyDate" />
+		<result column="WL_TIME" property="workTime" />
+		<result column="WL_WORK_DATE" property="workDate" />
+		<result column="work_month" property="workDate2" />
+		<result column="work_days" property="workDay" />
+		<result column="total_work_time" property="totalWorkTime" />
+	</resultMap>
+	
+
+	<!-- 출근 -->
+	<insert id="clockIn">
+		insert
+		  into work_log
+		  (
+		  	wl_no
+		  , mem_no
+		  , wl_clock_in
+		  , wl_work_date
+		  , wl_status
+		  )
+		  values
+		  (
+		  	seq_work.nextval
+		  , #{memNo}
+		  , #{clockInTime}
+		  , sysdate
+		  , 'C'
+		  )
+	</insert>
+
+	
+	<select id="selectClockInTime" resultType="String">
+		select
+				   wl_clock_in
+			from work_log
+		 where mem_no = #{memNo}
+		   and trunc(wl_work_date) = trunc(sysdate)
+	</select>
+	
+	<update id="clockOut">
+		update
+					 work_log
+			 set 
+			     wl_clock_out = #{clockOutTime}
+			   , wl_status = #{status}
+			   , wl_time = #{workTime}
+		 where mem_no = #{memNo}
+  		 and trunc(wl_work_date) = trunc(sysdate)
+	</update>
+
+	<!-- 출퇴근 시간조회 -->
+	<select id="allWorkTime" resultMap="workLogResultMap">
+		select
+		       wl_no
+				 , wl_clock_in
+				 , wl_clock_out
+				 , wl_status
+				 , wl_work_date
+		  from work_log
+		 where mem_no = #{memNo}
+	</select>
+	
+	<!-- 결근자 업데이트(출근있고 퇴근없는) -->
+	<update id="updateAbsences">
+		update
+					 work_log
+			 set wl_status = 'A'
+		 where trunc(wl_work_date) = trunc(sysdate)
+		   and wl_clock_out is null
+	</update>
+	
+	<!-- 결근자 insert(출근기록x) -->
+	<insert id="insertAbsences">
+   insert
+     into work_log
+   	 (
+	    wl_no
+	  , mem_no
+	  , wl_work_date
+	  , wl_status
+      )
+   select 
+    		  seq_work.nextval
+        , m.mem_no
+        , sysdate
+        , 'A'
+     from member m
+    where m.mem_no not in (
+                           select mem_no
+                             from work_log
+                            where trunc(wl_work_date) = trunc(sysdate)
+                           )
+	</insert>
+	
+	<select id="checkinrecordview" resultMap="workLogResultMap">
+    select 
+        WL_CLOCK_IN, 
+        WL_CLOCK_OUT, 
+        WL_STATUS, 
+        WL_WORK_DATE 
+    from 
+        WORK_LOG 
+		<where>
+        MEM_NO = #{memNo}
+        <if test="year != null and month != null">
+            AND TO_CHAR(WL_WORK_DATE, 'YY') = #{year}
+            AND TO_CHAR(WL_WORK_DATE, 'MM') = #{month}
+        </if>
+    </where>
+    order by 
+        WL_WORK_DATE DESC
+	</select>
+	
+	
+<select id="workhoursview" resultMap="workLogResultMap">
+    <![CDATA[
+    WITH months AS (
+        SELECT TO_CHAR(ADD_MONTHS(TO_DATE('2024-01', 'YYYY-MM'), LEVEL - 1), 'YYYY-MM') AS work_month
+        FROM dual
+        CONNECT BY LEVEL <= 12
+    )
+    SELECT 
+        m.work_month,
+        NVL(COUNT(wl.wl_work_date), 0) AS work_days,
+        NVL(SUM(wl.wl_time), 0) AS total_work_time
+    FROM 
+        months m
+    LEFT JOIN (
+        SELECT 
+            wl_work_date,
+            TO_CHAR(wl_work_date, 'YYYY-MM') AS work_month,
+            wl_time
+        FROM work_log
+        WHERE TO_CHAR(wl_work_date, 'YYYY') = '2024'
+          AND mem_no = #{memNo} -- 동적 파라미터
+    ) wl
+    ON m.work_month = wl.work_month
+    GROUP BY m.work_month
+    ORDER BY m.work_month
+    ]]>
+</select>
+
+	
+
+</mapper>

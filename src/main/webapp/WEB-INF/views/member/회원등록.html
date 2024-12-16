@@ -1,0 +1,811 @@
+<!doctype html>
+
+<html
+  lang="en"
+  class="light-style layout-navbar-fixed layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../../assets/"
+  data-template="vertical-menu-template"
+  data-style="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>eCommerce Category List - Apps | Vuexy - Bootstrap Admin Template</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+      rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/flag-icons.css" />
+
+    <!-- Core CSS -->
+
+    <link rel="stylesheet" href="../../assets/vendor/css/rtl/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../../assets/vendor/css/rtl/theme-default.css" class="template-customizer-theme-css" />
+
+    <link rel="stylesheet" href="../../assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../../assets/vendor/libs/node-waves/node-waves.css" />
+
+    <link rel="stylesheet" href="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/typeahead-js/typeahead.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/@form-validation/form-validation.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/quill/typography.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/quill/katex.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/quill/editor.css" />
+
+    <!-- Page CSS -->
+
+    <link rel="stylesheet" href="../../assets/vendor/css/pages/app-ecommerce.css" />
+
+    <!-- Helpers -->
+    <script src="../../assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="../../assets/vendor/js/template-customizer.js"></script>
+
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="../../assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="index.html" class="app-brand-link">
+              <span class="app-brand-logo demo">
+                <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M0.00172773 0V6.85398C0.00172773 6.85398 -0.133178 9.01207 1.98092 10.8388L13.6912 21.9964L19.7809 21.9181L18.8042 9.88248L16.4951 7.17289L9.23799 0H0.00172773Z"
+                    fill="#7367F0" />
+                  <path
+                    opacity="0.06"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7.69824 16.4364L12.5199 3.23696L16.5541 7.25596L7.69824 16.4364Z"
+                    fill="#161616" />
+                  <path
+                    opacity="0.06"
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M8.07751 15.9175L13.9419 4.63989L16.5849 7.28475L8.07751 15.9175Z"
+                    fill="#161616" />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z"
+                    fill="#7367F0" />
+                </svg>
+              </span>
+              <span class="app-brand-text demo menu-text fw-bold">Cruella</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+              <i class="ti menu-toggle-icon d-none d-xl-block align-middle"></i>
+              <i class="ti ti-x d-block d-xl-none ti-md align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+
+           
+
+            <!-- 메뉴 -->
+            <li class="menu-header small">
+              <span class="menu-header-text" data-i18n="메뉴">메뉴</span>
+            </li>
+
+            <!-- 마이페이지 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-user"></i>
+                <div data-i18n="마이페이지">마이페이지</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="내 정보">내 정보</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="근태관리">근태관리</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- 전자결재 -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-edit"></i>
+                <div data-i18n="전자결재">전자결재</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="결재 작성">결재 작성</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="결재 문서함">결재 문서함</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- 일정관리 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-calendar"></i>
+                <div data-i18n="일정관리">일정관리</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="전사 일정">전사 일정</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="팀 일정">팀 일정</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="개인 일정">개인 일정</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+
+
+            <!-- 자산관리 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-box"></i>
+                <div data-i18n="자산관리">자산관리</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="시설 예약/관리">시설 예약/관리</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="비품 관리">비품 관리</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- 인사관리 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div data-i18n="인사관리">인사관리</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="직원 등록">직원 등록</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="직원 조회">직원 조회</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="출퇴근 기록관리">출퇴근 기록관리</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="근무시간 조회">근무시간 조회</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="조직도 관리">조직도 관리</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="급여명세서 조회/발급">급여명세서 조회/발급</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+
+
+            <!-- 게시판 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-list-numbers"></i>
+                <div data-i18n="게시판">게시판</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="공지사항">공지사항</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="menu-link">
+                    <div data-i18n="팀 게시판">팀 게시판</div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <!-- 매출분석 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-chart-dots"></i>
+                <div data-i18n="매출분석">매출분석</div>
+              </a>
+            </li>
+
+
+            <!-- 메신저 -->
+            <li class="menu-item">
+              <a href="#" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-messages"></i>
+                <div data-i18n="메신저">메신저</div>
+              </a>
+            </li>
+
+        </aside>
+        <!-- / Menu -->
+
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar">
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="ti ti-menu-2 ti-md"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item navbar-search-wrapper mb-0">
+                  <a class="nav-item nav-link search-toggler d-flex align-items-center px-0" href="javascript:void(0);">
+                    <i class="ti ti-search ti-md me-2 me-lg-4 ti-lg"></i>
+                    <span class="d-none d-md-inline-block text-muted fw-normal">Search (Ctrl+/)</span>
+                  </a>
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- Language -->
+                
+                <!--/ Language -->
+
+                <!-- Style Switcher -->
+                <li class="nav-item dropdown-style-switcher dropdown">
+                  <a
+                    class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                    href="javascript:void(0);"
+                    data-bs-toggle="dropdown">
+                    <i class="ti ti-md"></i>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end dropdown-styles">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" data-theme="light">
+                        <span class="align-middle"><i class="ti ti-sun ti-md me-3"></i>Light</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" data-theme="dark">
+                        <span class="align-middle"><i class="ti ti-moon-stars ti-md me-3"></i>Dark</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);" data-theme="system">
+                        <span class="align-middle"
+                          ><i class="ti ti-device-desktop-analytics ti-md me-3"></i>System</span
+                        >
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!-- / Style Switcher-->
+
+                <!-- Quick links  -->
+               
+                <!-- Quick links -->
+
+                <!-- Notification -->
+                <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
+                  <a
+                    class="nav-link btn btn-text-secondary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                    href="javascript:void(0);"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="outside"
+                    aria-expanded="false">
+                    <span class="position-relative">
+                      <i class="ti ti-bell ti-md"></i>
+                      <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
+                    </span>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end p-0">
+                    <li class="dropdown-menu-header border-bottom">
+                      <div class="dropdown-header d-flex align-items-center py-3">
+                        <h6 class="mb-0 me-auto">알림</h6>
+                      </div>
+                    </li>
+                    <li class="dropdown-notifications-list scrollable-container">
+                      <ul class="list-group list-group-flush">
+                        <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                          <div class="d-flex">
+                            <div class="flex-shrink-0 me-3">
+                              <div class="avatar">
+                                <img src="../../assets/img/avatars/1.png" alt class="rounded-circle" />
+                              </div>
+                            </div>
+                            <div class="flex-grow-1">
+                              <h6 class="small mb-1">Congratulation Lettie 🎉</h6>
+                              <small class="mb-1 d-block text-body">Won the monthly best seller gold badge</small>
+                              <small class="text-muted">1h ago</small>
+                            </div>
+                            <div class="flex-shrink-0 dropdown-notifications-actions">
+                              <a href="javascript:void(0)" class="dropdown-notifications-read"
+                                ><span class="badge badge-dot"></span
+                              ></a>
+                              <a href="javascript:void(0)" class="dropdown-notifications-archive"
+                                ><span class="ti ti-x"></span
+                              ></a>
+                            </div>
+                          </div>
+                        </li>
+                       
+                      </ul>
+                    </li>
+                    <li class="border-top">
+                      <div class="d-grid p-4">
+                        <a class="btn btn-primary btn-sm d-flex" href="javascript:void(0);">
+                          <small class="align-middle">View all notifications</small>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ Notification -->
+
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a
+                    class="nav-link dropdown-toggle hide-arrow p-0"
+                    href="javascript:void(0);"
+                    data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="../../assets/img/avatars/1.png" alt class="rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item mt-0" href="pages-account-settings-account.html">
+                        <div class="d-flex align-items-center">
+                          <div class="flex-shrink-0 me-2">
+                            <div class="avatar avatar-online">
+                              <img src="../../assets/img/avatars/1.png" alt class="rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <h6 class="mb-0">John Doe</h6>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider my-1 mx-n2"></div>
+                    </li>
+                   
+                    <li>
+                      <div class="d-grid px-2 pt-2 pb-1">
+                        <a class="btn btn-sm btn-danger d-flex" href="auth-login-cover.html" target="_blank">
+                          <small class="align-middle">Logout</small>
+                          <i class="ti ti-logout ms-2 ti-14px"></i>
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+
+            <!-- Search Small Screens -->
+            <div class="navbar-search-wrapper search-input-wrapper d-none">
+              <input
+                type="text"
+                class="form-control search-input container-xxl border-0"
+                placeholder="Search..."
+                aria-label="Search..." />
+              <i class="ti ti-x search-toggler cursor-pointer"></i>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+
+         
+
+
+
+          <!-- Session Start -->
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="nav-align-top">
+                    <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0">
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#">
+                          <i class="ti-sm ti ti-user-check me-1_5"></i> 직원 등록
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#"
+                          ><i class="ti-sm ti ti-users me-1_5"></i> 직원 조회
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#"
+                          ><i class="ti-sm ti ti-users me-1_5"></i> 출퇴근 기록관리
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#"
+                          ><i class="ti-sm ti ti-users me-1_5"></i> 근무시간 조회
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#"
+                          ><i class="ti-sm ti ti-users me-1_5"></i> 조직도 관리
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link active" href="#"
+                          ><i class="ti-sm ti ti-users me-1_5"></i> 급여 지급
+                        </a>
+                      </li>
+
+                      <li class="nav-item">
+                        <a class="nav-link" href="#"
+                          ><i class="ti-sm ti ti-money me-1_5"></i> 급여명세서 조회/발급
+                        </a>
+                      </li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+                <div class="container-xxl flex-grow-1 container-p-y">
+                    <div class="row">
+                      <div class="col-md-12">
+      
+                        <div class="card mb-6">
+                          <!-- Account -->
+                          <div class="card-body">
+                            <div style="text-align: center;">
+                              <img
+                                src="../../assets/img/avatars/1.png"
+                                alt="user-avatar"
+                                class="d-block w-px-140 h-px-140 rounded mx-auto"
+                                id="uploadedAvatar" 
+                                style="margin-bottom: 20px; align-items: center;"
+                                height="120px" 
+                                />
+                              <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
+                                  <span class="d-none d-sm-block">첨부파일 업로드</span>
+                                  <i class="ti ti-upload d-block d-sm-none"></i>
+                                  <input
+                                    type="file"
+                                    id="upload"
+                                    class="account-file-input"
+                                    hidden
+                                    accept="image/png, image/jpeg" 
+                                   />
+                                </label>
+                                <button type="button" class="btn btn-label-secondary account-image-reset mb-4">
+                                  <i class="ti ti-refresh-dot d-block d-sm-none"></i>
+                                  <span class="d-none d-sm-block">Reset</span>
+                                </button>
+      
+                              </div>
+                            </div>
+                          </div>
+                          <h5 class="pb-4 border-bottom mb-4"></h5>
+                          <div class="card-body pt-4">
+                            <form id="formAccountSettings" method="GET" onsubmit="return false">
+                              <div class="row">
+                                <div class="mb-4 col-md-6">
+                                  <label for="name" class="form-label">이름</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    id="name"
+                                    name="name"
+                                    autofocus />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="accountNumber" class="form-label">계좌번호</label>
+                                  <div style="display: flex; gap: 10px;">
+                                      <select class="form-select" style="flex: 1;">
+                                          <option value="">선택</option>
+                                          <option value="">국민</option>
+                                          <option value="">신한</option>
+                                          <option value="">우리</option>
+                                      </select>
+                                      <input class="form-control" type="text" name="accountNumber" id="accountNumber" placeholder="계좌번호 입력" style="flex: 3;" />
+                                  </div>
+                              </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="employeeNumber" class="form-label">사번</label>
+                                  <input
+                                    class="form-control"
+                                    type="text"
+                                    id="employeeNumber"
+                                    name="employeeNumber" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="rank" class="form-label">부서</label>
+                                  <select id="rank" class="select2 form-select">
+                                    <option value="">인사</option>
+                                    <option value="">영업총괄</option>
+                                    <option value="">등등</option>
+                                  </select>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label class="form-label" for="password">비밀번호</label>
+                                  <div class="input-group input-group-merge">
+                                    <input
+                                      type="text"
+                                      id="password"
+                                      name="password"
+                                      class="form-control" />
+                                  </div>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="rank" class="form-label">직급</label>
+                                  <select id="rank" class="select2 form-select">
+                                    <option value="">선택</option>
+                                    <option value="">점장</option>
+                                    <option value="">부점장</option>
+                                    <option value="">부장</option>
+                                    <option value="">팀장</option>
+                                    <option value="">과장</option>
+                                    <option value="">차장</option>
+                                    <option value="">대리</option>
+                                    <option value="">주임</option>
+                                    <option value="">사원</option>
+                                  </select>
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="email" class="form-label">Email</label>
+                                  <input class="form-control" type="text" id="email" name="email" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="salary" class="form-label">급여</label>
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="salary"
+                                    name="salary" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label class="joiningDate" for="country">입사날짜</label>
+                                  <input class="form-control" type="text" id="state" name="state" placeholder="YY/MM/DD" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="language" class="form-label">주소</label>
+                                  <input class="form-control" type="text" id="state" name="state" placeholder="Address" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="timeZones" class="form-label">주민등록번호</label>
+                                  <input class="form-control" type="text" id="state" name="state" placeholder="000000-0000000" />
+                                </div>
+                                <div class="mb-4 col-md-6">
+                                  <label for="currency" class="form-label">전화번호</label>
+                                  <input class="form-control" type="text" id="state" name="state" placeholder="010-1111-2222" />
+                                </div>
+                              </div>
+                              <div class="mt-2" style="justify-self: center;">
+                                <button type="submit" class="btn btn-primary me-3">등록하기</button>
+                                <button type="reset" class="btn btn-label-secondary">취소하기</button>
+                              </div>
+                            </form>
+                          </div>
+                          <!-- /Account -->
+                        </div>
+      
+                      </div>
+                    </div>
+                  </div>
+                  <!-- / Content -->
+      
+                  <!-- Footer -->
+                  <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl">
+                      <div
+                        class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                        <div class="text-body">
+                          ©
+                          <script>
+                            document.write(new Date().getFullYear());
+                          </script>
+                          , made with ❤️ by <a href="https://pixinvent.com" target="_blank" class="footer-link">Pixinvent</a>
+                        </div>
+                        <div class="d-none d-lg-inline-block">
+                          <a href="https://themeforest.net/licenses/standard" class="footer-link me-4" target="_blank"
+                            >License</a
+                          >
+                          <a href="https://1.envato.market/pixinvent_portfolio" target="_blank" class="footer-link me-4"
+                            >More Themes</a
+                          >
+      
+                          <a
+                            href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/"
+                            target="_blank"
+                            class="footer-link me-4"
+                            >Documentation</a
+                          >
+      
+                          <a href="https://pixinvent.ticksy.com/" target="_blank" class="footer-link d-none d-sm-inline-block"
+                            >Support</a
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </footer>
+                  <!-- / Footer -->
+      
+                  <div class="content-backdrop fade"></div>
+                </div>                
+
+
+
+
+                
+            </div>
+            
+            
+           <!-- Session End -->
+            
+           
+
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl">
+                <div
+                  class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
+                  <div class="text-body">
+                    ©
+                    <script>
+                      document.write(new Date().getFullYear());
+                    </script>
+                    , made by Cruella 
+                  </div>
+                  <div class="d-none d-lg-inline-block">
+                    <a href="#" class="footer-link me-4" target="_blank"
+                      >홈</a
+                    >
+                    <a href="#" target="_blank" class="footer-link me-4"
+                      >전자 결재</a
+                    >
+
+                    <a
+                      href="#"
+                      target="_blank"
+                      class="footer-link me-4"
+                      >공지사항</a
+                    >
+
+                    <a href="#" target="_blank" class="footer-link d-none d-sm-inline-block"
+                      >일정관리</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+
+      <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+      <div class="drag-target"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+
+    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../../assets/vendor/js/bootstrap.js"></script>
+    <script src="../../assets/vendor/libs/node-waves/node-waves.js"></script>
+    <script src="../../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+    <script src="../../assets/vendor/libs/i18n/i18n.js"></script>
+    <script src="../../assets/vendor/libs/typeahead-js/typeahead.js"></script>
+    <script src="../../assets/vendor/js/menu.js"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="../../assets/vendor/libs/moment/moment.js"></script>
+    <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="../../assets/vendor/libs/select2/select2.js"></script>
+    <script src="../../assets/vendor/libs/@form-validation/popular.js"></script>
+    <script src="../../assets/vendor/libs/@form-validation/bootstrap5.js"></script>
+    <script src="../../assets/vendor/libs/@form-validation/auto-focus.js"></script>
+    <script src="../../assets/vendor/libs/quill/katex.js"></script>
+    <script src="../../assets/vendor/libs/quill/quill.js"></script>
+
+    <!-- Main JS -->
+    <script src="../../assets/js/main.js"></script>
+
+    <!-- Page JS -->
+    <script src="../../assets/js/app-ecommerce-category-list.js"></script>
+  </body>
+</html>

@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="appMapper">
+
+
+
+<!-- jstree 용 -->
+<resultMap id="deptResultMap" type="DeptDto"> 
+	<result column="DEPT_CODE" property="deptCode"/>
+  	<result column="DEPT_NAME" property="deptName"/>
+  	
+	<collection ofType="MemberDto" property="memList">
+  		<result column="MEM_NO" property="memNo"/>
+  		<result column="MEM_NAME" property="memName"/>
+  		<result column="POS_CODE" property="posCode"/>
+  		<result column="POS_NAME" property="posName"/>
+  	</collection>
+</resultMap>
+
+
+
+<!-- 부서조회용 -->
+<resultMap  id="deptDtoResultSmall" type="DeptDto">
+	<result column="mem_name" property="memName"/>
+	<result column="dept_name" property="deptName"/>
+	<result column="pos_name" property="posName"/>
+	<result column="mem_no" property="memNo"/>
+</resultMap>
+
+
+<!-- 참조용 -->
+<resultMap  id="selectStandbyResult" type="AppdocDto">
+	<result column="mem_name" property="memName"/>
+	<result column="doc_no" property="docNo"/>
+	<result column="doc_type" property="docType"/>
+	<result column="doc_title" property="docTitle"/>
+	<result column="doc_content" property="docContent"/>
+	<result column="doc_date" property="docDt"/>
+	<result column="doc_importance" property="docImpo"/>
+	<result column="doc_status" property="docStatus"/>
+	
+</resultMap>
+
+
+<!-- 상세페이지용  -->
+<resultMap  id="detailSelectAppdoc" type="AppdocDto">
+	<result column="mem_name" property="memName"/>
+	<result column="mem_no" property="memNo"/>
+	<result column="doc_no" property="docNo"/>
+	<result column="dept_name" property="deptName"/>
+	<result column="pos_name" property="posName"/>
+	<result column="doc_date" property="docDt"/>
+	<result column="doc_type" property="docType"/>
+	<result column="APP_DATE_START" property="appDateStart"/>
+	<result column="APP_DATE_END" property="appDateEnd"/>
+	<result column="APP_COE_DATE" property="appCoreDt"/>
+	<result column="doc_title" property="docTitle"/>
+	<result column="doc_content" property="docContent"/>
+	<result column="max_order" property="maxOrder"/>
+	<result column="doc_order" property="docOrder"/>
+	<result column="app_rej_reason" property="reason"/>
+	<result column="doc_status" property="docStatus"/>
+	<result column="ref_status" property="refStatus"/>
+	<result column="attachCount" property="attachCount"/>
+</resultMap>
+
+
+<!-- 상세페이지 결재선용 -->
+<resultMap  id="detailSelectRoval" type="AppRovalDto">
+	<result column="dept_name" property="deptName"/>
+	<result column="mem_name" property="memName"/>
+	<result column="app_level" property="appLevel"/>
+	<result column="mem_no" property="rvNo"/>
+	<result column="sign_path" property="signPath"/>
+	<result column="app_status" property="appStatus"/>
+</resultMap>
+
+
+
+
+<!-- 알람 맵 -->
+<resultMap type="AlertDto" id="alertResultMap">
+	<result column="ALERT_NO" property="alertNo" />
+	<result column="ALERT_TYPE" property="alertType" />
+	<result column="ALERT_CONTENT" property="alertContent" />
+	<result column="ALERT_STATUS" property="alertStatus" />
+	<result column="MEM_NO" property="memNo" />
+	<result column="ALERT_REGIST_DATE" property="alertRegistDate" />
+	<result column="ALERT_LINK" property="alertLink" />
+</resultMap>
+
+
+
+
+	
+	
+<!-- jstree 조직도 조회문 -->
+<select id="ajaxJstree" resultMap="deptResultMap">
+	
+	SELECT 
+        MEM_NO
+       ,MEM_NAME
+       ,P.POS_NAME AS POS_NAME
+       ,M.POS_CODE AS POS_CODE
+       ,D.DEPT_NAME AS DEPT_NAME
+       ,M.DEPT_CODE AS DEPT_CODE
+	FROM 
+		MEMBER M
+	JOIN 
+		POSITION P ON (M.POS_CODE = P.POS_CODE)
+	JOIN 
+		DEPARTMENT D ON (M.DEPT_CODE = D.DEPT_CODE)
+	where mem_no != #{memNo}
+	
+	
+</select>
+
+
+
+<!-- 양식마다 이동시 양식 기본값 적용할 데이터 조회문 -->
+<select id="formDraftPage" resultMap="deptDtoResultSmall">
+	select
+      dept_name 
+      ,mem_name 
+      ,pos_name 
+      ,mem_no
+    from
+        member m
+    join position p on (m.pos_code = p.pos_code)
+    join department d on(m.dept_code = d.dept_code)
+    where mem_no = #{userNo}
+		
+</select>
+
+
+
+
+<!-- 기안서 insert -->
+<insert id="insertApp">
+insert 
+into app_doc
+(
+ DOC_NO
+,MEM_NO
+,DOC_TYPE
+,DOC_TITLE
+,DOC_CONTENT
+,DOC_IMPORTANCE
+,DOC_DATE
+,DOC_STATUS
+,DOC_ORDER
+,STATUS
+)
+values
+(
+   seq_app.nextval
+  ,#{memNo}
+  ,#{docType}
+  ,#{docTitle}
+  ,#{docContent}
+  ,#{docImpo}
+  ,sysdate
+  ,'A'  --  A: 대기 / B:진행/ C:최종승인/ D:반려
+  ,1    -- 결재순서
+  ,'Y'  -- 존재여부
+)
+
+</insert>
+
+
+<!-- 파일 insert -->
+<insert id="insertAttach">
+insert 
+into attachment
+(
+    FILE_NO
+    ,FILE_PATH
+    ,FILE_ORIGINAL_NAME
+    ,FILE_SYSTEM_NAME
+    ,FILE_REF_NO
+    ,FILE_REF_TYPE
+)
+values
+(
+    seq_fno.nextval
+    ,#{filePath}
+    ,#{originalName}
+    ,#{filesystemName}
+    ,seq_app.currval
+    ,'A' -- 전자결재
+)
+
+</insert>
+
+
+
+<!-- 결재선 insert -->
+<insert id="insertRoval">
+insert
+into approval
+(
+ mem_no
+ ,doc_no
+ ,app_level
+ ,app_status
+)
+values
+(
+  #{rvNo}
+  ,seq_app.currval
+  ,#{appLevel}  -- 결재순서
+  ,'A' -- 대기
+)
+
+</insert>
+
+
+<!-- 참조선 insert  -->
+<insert id="insertRef">
+insert 
+into app_ref
+(
+  doc_no
+  ,mem_no
+  ,ref_status
+)
+values
+(
+  seq_app.currval
+ ,#{refNo}
+ ,'참조'
+)
+
+</insert>
+
+
+<!-- 연차신청서 -->
+<insert id="insertFormAnn">
+insert
+into app_form_ann
+(
+ DOC_NO
+,APP_DATE_START
+,APP_DATE_END
+)
+values
+(
+  seq_app.currval
+  ,#{appDateStart}
+  ,#{appDateEnd}
+)
+
+</insert>
+
+
+<!-- 증명서신청서 -->
+<insert id="insertFormCoe">
+insert
+into app_form_coe
+(
+ DOC_NO
+,APP_COE_DATE
+)
+values
+(
+  seq_app.currval
+  ,#{appCoreDt}
+)
+
+</insert>
+
+
+
+<!-- 결재대기함 리스트 카운트(페이징용) -->
+<select id="selectStandbyCount" resultType="_int">
+select 
+     count(*)
+from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    join approval r on (a.doc_no = r.doc_no)
+    where r.mem_no = #{memNo} -- 결재선/현재로그인한 사번
+    and a.doc_order = r.app_level
+    and r.app_status = 'A' -- 대기
+
+</select>
+
+
+
+
+<!-- 결재대기함 리스트 조회 -->
+<select id="selectStandby" resultMap="selectStandbyResult">
+select 
+        m.mem_name as mem_name
+        ,a.doc_no as doc_no
+        ,a.doc_type as doc_type
+        ,
+         CASE 
+	     WHEN LENGTH(a.doc_title) > 15 THEN SUBSTR(a.doc_title, 1, 15) || '...'
+	     ELSE a.doc_title
+	  	 END as doc_title
+	  	 
+        ,a.doc_content as doc_content
+        ,a.doc_date as doc_date
+        ,a.doc_importance as doc_importance
+        ,a.doc_status as doc_status
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    join approval r on (a.doc_no = r.doc_no)
+    where r.mem_no = #{memNo} -- 결재선/현재로그인한 사번
+    and a.doc_order = r.app_level
+    and r.app_status = 'A' -- 대기
+    and a.status = 'Y'
+    order by a.doc_date desc
+
+</select>
+
+
+
+<!-- 참조열람함 카운트(페이징용) -->
+<select id="selectViewCount" resultType="_int">
+
+select 
+      count(*)
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    join app_ref ar on (a.mem_no = m.mem_no)
+    where a.doc_no = ar.doc_no
+    and a.status = 'Y'
+    and ar.mem_no = #{memNo}
+    order by a.doc_date desc
+</select>
+
+<!-- 참조열람함 리스트 조회 -->
+<select id="selectView" resultMap="selectStandbyResult">
+select 
+        m.mem_name as mem_name
+        ,a.doc_no as doc_no
+        ,a.doc_type as doc_type
+        ,
+         CASE 
+	     WHEN LENGTH(a.doc_title) > 15 THEN SUBSTR(a.doc_title, 1, 15) || '...'
+	     ELSE a.doc_title
+	  	 END as doc_title
+         
+        ,a.doc_content as doc_content
+        ,a.doc_date as doc_date
+        ,a.doc_importance as doc_importance
+        ,a.doc_status as doc_status
+        ,ar.ref_status as ref_status
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    join app_ref ar on (a.mem_no = m.mem_no)
+    where a.doc_no = ar.doc_no
+    and a.status = 'Y'
+    and ar.mem_no = #{memNo}
+    order by a.doc_date desc
+
+</select>
+
+
+
+
+<!-- 반려리스트 조회 -->
+<select id="selectCompanion" resultMap="selectStandbyResult"> 
+select 
+        m.mem_name as mem_name
+        ,a.doc_no as doc_no
+        ,a.doc_type as doc_type
+        ,
+         CASE 
+	     WHEN LENGTH(a.doc_title) > 15 THEN SUBSTR(a.doc_title, 1, 15) || '...'
+	     ELSE a.doc_title
+	  	 END as doc_title
+	  	 
+        ,a.doc_content as doc_content
+        ,a.doc_date as doc_date
+        ,a.doc_importance as doc_importance
+        ,a.doc_status as doc_status
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 결재선/현재로그인한 사번
+   	and a.doc_status = 'D'
+    and a.status = 'Y'
+    order by a.doc_date desc
+
+</select>
+
+
+<!-- 반려리스트 카운트 -->
+<select id="selectCompanionCount" resultType="_int"> 
+select count(*)
+        
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 결재선/현재로그인한 사번
+   	and a.doc_status = 'D'
+    and a.status = 'Y'
+    order by a.doc_date desc
+
+</select>
+
+
+
+<!-- 진행리스트 조회 -->
+<select id="selectProgress" resultMap="selectStandbyResult"> 
+select 
+        m.mem_name as mem_name
+        ,a.doc_no as doc_no
+        ,a.doc_type as doc_type
+        ,
+         CASE 
+	     WHEN LENGTH(a.doc_title) > 15 THEN SUBSTR(a.doc_title, 1, 15) || '...'
+	     ELSE a.doc_title
+	  	 END as doc_title
+	  	 
+        ,a.doc_content as doc_content
+        ,a.doc_date as doc_date
+        ,a.doc_importance as doc_importance
+        ,a.doc_status as doc_status
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 기안서/현재로그인한 사번
+   	and a.doc_status in ('A','B')
+    and a.status = 'Y'
+    order by a.doc_date desc
+
+</select>
+
+<!-- 진행리스트 페이징용 -->
+<select id="selectProgressCount" resultType="_int">
+select 
+       count(*)
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 결재선/현재로그인한 사번
+   	and a.doc_status in ('A','B')
+    and a.status = 'Y'
+    order by a.doc_date desc
+    
+</select>
+
+
+
+<!-- 완료리스트 조회 -->
+<select id="selectSuccess" resultMap="selectStandbyResult"> 
+select 
+        m.mem_name as mem_name
+        ,a.doc_no as doc_no
+        ,a.doc_type as doc_type
+        ,
+         CASE 
+	     WHEN LENGTH(a.doc_title) > 15 THEN SUBSTR(a.doc_title, 1, 15) || '...'
+	     ELSE a.doc_title
+	  	 END as doc_title
+	  	 
+        ,a.doc_content as doc_content
+        ,a.doc_date as doc_date
+        ,a.doc_importance as doc_importance
+        ,a.doc_status as doc_status
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 기안서/현재로그인한 사번
+   	and a.doc_status = 'C'
+    and a.status = 'Y'
+    order by a.doc_date desc
+
+</select>
+
+<!-- 완료리스트 페이징용 -->
+<select id="selectSuccessCount" resultType="_int">
+select count(*)
+       
+    from member m
+    join app_doc a on(m.mem_no = a.mem_no)
+    where a.mem_no = #{memNo} -- 기안서/현재로그인한 사번
+   	and a.doc_status = 'C'
+    and a.status = 'Y'
+    order by a.doc_date desc
+    
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 상세페이지 -->
+<!-- 기안문서조회 (상세페이지용) -->
+<select id="appdocDetailSelectAll" resultMap="detailSelectAppdoc">
+ select 
+	   m.mem_name as mem_name
+	   ,ad.mem_no as mem_no
+	  ,ad.doc_no as doc_no
+	  ,ad.doc_order as doc_order
+	  ,d.dept_name as dept_name
+	  ,ad.doc_title as doc_title
+	  ,ad.doc_content as doc_content
+	  ,p.pos_name as pos_name
+	  ,ad.doc_date as doc_date
+	  ,ad.doc_type as doc_type
+	  ,af.APP_DATE_START as APP_DATE_START
+	  ,af.APP_DATE_END as APP_DATE_END
+	  ,ad.doc_status as doc_status
+	  ,ac.APP_COE_DATE as APP_COE_DATE   -- 발행날짜
+	  ,
+	  (
+        		select max(ar.app_level)
+        		from app_doc a
+        		join approval ar on(a.doc_no = ar.doc_no)
+        		where a.doc_no = ar.doc_no
+                and a.doc_no = #{docNo}
+     )as max_order  -- 기안문서의 결재선 마지막 순서
+     ,ad.app_rej_reason as app_rej_reason -- 반려사유
+	 ,(
+	 	select count(*)
+		 from attachment
+		 where FILE_REF_TYPE = 'A'
+		 and FILE_REF_NO = #{docNo}
+	 ) as attachCount
+ from 
+ 	 member m
+ join 
+ 	 department d on (m.dept_code = d.dept_code)
+ join 
+      position p on (m.pos_code = p.pos_code)
+ join 
+ 	  app_doc ad on (m.mem_no = ad.mem_no)
+ left join 
+          app_form_ann af on(af.doc_no = ad.doc_no)
+ left join 
+          app_form_coe ac on(ad.doc_no = ac.doc_no)
+
+ 
+ where ad.doc_no = #{docNo}
+ and ad.status = 'Y'
+
+</select>
+
+
+<!-- 결재선조회 (상세페이지용) -->
+<select id="appdocDetailSelectRoval" resultMap="detailSelectRoval">
+ select 
+      d.dept_name as dept_name
+      ,m.mem_name as mem_name
+      ,ar.APP_LEVEL as app_level
+      ,ar.mem_no as mem_no
+      ,m.sign_path as sign_path -- 전자서명
+      ,ar.app_status as app_status -- 결재상태
+from approval ar
+join member m on (m.mem_no = ar.mem_no)
+join department d on(m.dept_code = d.dept_code)
+where ar.doc_no = #{docNo}
+order by app_level
+
+</select>
+
+<!-- 파일조회 (상세페이지용) -->
+<select id="appdocDetailSelectAttach" resultType="AttachDto">
+
+select 
+      FILE_PATH as filePath
+     ,FILE_SYSTEM_NAME as filesystemName
+     ,FILE_ORIGINAL_NAME as originalName
+ from attachment
+ where FILE_REF_TYPE = 'A'
+ and FILE_REF_NO = #{docNo}
+ 
+</select>
+
+
+
+
+<!-- 기안문서의 다음순서 및 진행중으로 업데이트 / 기안문서 -->
+<update id="appSignAndDocOrderAndstatusUpdate">
+
+update app_doc 
+set     doc_status = 'B',  -- 진행중
+		doc_order = doc_order + 1  -- 기안문서 순서 증가
+where doc_no = #{docNo}
+
+</update>
+
+
+<!-- 기안문서 최종승인으로 업데이트 / 기안문서 -->
+<update id="appSignAndLastUpdate">
+update app_doc 
+set    doc_status = 'C'  -- 최종승인
+where  doc_no = #{docNo}
+</update>
+
+
+<!-- 기안문서의 다음순서 및 진행중으로 업데이트 / 결재선 -->
+<update id="lastApproval">
+update approval 
+set  app_status = 'Y', -- 결재선 상태 업데이트
+	 app_date = sysdate -- 결재일 업데이트
+where doc_no = #{docNo}	
+  and mem_no = #{memNo}
+</update>
+
+
+
+<!-- 기안문서 반려 업데이트 / 기안문서 -->
+<update id="appdocCompanionUpdate">
+update app_doc 
+set    doc_status = 'D',  -- 반려
+	   APP_REJ_REASON = #{reason}
+where  doc_no = #{docNo}
+</update>
+
+
+<!-- 기안문서 반려 업데이트 결재선 -->
+<update id="approvalCompanion">
+update approval 
+set  app_status = 'N', -- 결재선 상태 업데이트
+	 app_date = sysdate -- 결재일(반려일) 업데이트
+where doc_no = #{docNo}	
+  and mem_no = #{memNo}
+</update>
+
+
+
+
+
+
+
+
+<!-- 회수버튼 클릭스 기안서 회수 -->
+<update id="appDeleteBack">
+update app_doc 
+set    STATUS = 'N'
+where  doc_no = #{docNo}
+</update>
+
+
+<!-- 회수버튼 클릭스 기안서 회수 -->
+<update id="ajaxDeleteCheckApp">
+update app_doc 
+set status = 'N'
+where doc_no = #{a}
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 최종승인시 휴가테이블 insert -->
+<insert id="vacation">
+
+ INSERT INTO  vacation
+(
+	 VAC_NO
+	,VAC_DATE
+  ,VAC_START_DATE
+  ,VAC_END_DATE
+  ,MEM_NO
+)
+ select 
+ 				seq_vac.nextval
+ 				,(app_date_end-app_date_start)+1  
+ 				, app_date_start 
+ 				, app_date_end
+ 				,#{docMemNo}
+ from app_form_ann 
+ where doc_no = #{docNo}
+        
+
+
+
+</insert>
+
+
+
+<!-- 최종결재시 멤버연차일 업데이트 -->
+<update id="memberVacation">
+update member 
+set VAC_COUNT = VAC_COUNT - (
+								select
+									(app_date_end - app_date_start)+1 
+								 from 
+									app_form_ann
+								where doc_no = #{docNo}
+							)
+where mem_no = #{docMemNo}
+
+</update>
+
+
+<!-- 결재자 번호 찾아오기 -->
+<select id="appRovalNo" resultType="string">
+select 
+        mem_no
+  from 
+        approval
+ where
+        doc_no = #{docNo}
+   and  app_level = #{appLevel}+1
+</select>
+
+
+<!-- 결재 신청자 사번 가져오기 -->
+<select id="finalMemNo" resultType="string">
+select
+        mem_no
+  from
+        app_doc
+ where
+        doc_no = #{docNo}
+</select>
+
+<!-- 알림DB에 저장하기 -->
+<insert id="insertAlert">
+insert
+  into
+        alert
+        (
+        alert_no
+     ,  alert_type
+     ,  alert_content
+     ,  mem_no
+     ,  alert_link
+        )
+        values
+        (
+        seq_alert.nextval
+     ,  'A'
+     ,  '결재대기함에 문서가 등록되었습니다.'
+     ,  #{mem_no}
+     ,  '/app/box_standby.do'
+        )
+</insert>
+
+<!-- 방금 생성된 알람 정보 가져오기 -->
+<select id="selectAlert" resultMap="alertResultMap">
+SELECT
+	    ALERT_NO,
+	    ALERT_CONTENT,
+	    MEM_NO,
+	    ALERT_REGIST_DATE,
+	    ALERT_LINK
+FROM
+    	alert
+WHERE
+	    ALERT_NO = (
+	        SELECT MAX(ALERT_NO) 
+	        FROM alert
+	    )
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>
